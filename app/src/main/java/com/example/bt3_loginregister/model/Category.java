@@ -1,18 +1,25 @@
 package com.example.bt3_loginregister.model;
 
+import com.google.gson.annotations.SerializedName;
+
 public class Category {
+    @SerializedName("id")
     private int id;
+
+    @SerializedName("name")
     private String name;
-    private String image;
+
+    @SerializedName("imageUrl")
+    private String imageUrl;
 
     // Constructors
     public Category() {
     }
 
-    public Category(int id, String name, String image) {
+    public Category(int id, String name, String imageUrl) {
         this.id = id;
         this.name = name;
-        this.image = image;
+        this.imageUrl = imageUrl;
     }
 
     // Getters and Setters
@@ -32,11 +39,11 @@ public class Category {
         this.name = name;
     }
 
-    public String getImage() {
-        return image;
+    public String getImageUrl() {
+        return imageUrl;
     }
 
-    public void setImage(String image) {
-        this.image = image;
+    public void setImageUrl(String imageUrl) {
+        this.imageUrl = imageUrl;
     }
 }

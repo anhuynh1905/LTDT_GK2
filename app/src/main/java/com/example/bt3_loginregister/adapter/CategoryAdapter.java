@@ -40,7 +40,7 @@ public class CategoryAdapter extends RecyclerView.Adapter<CategoryAdapter.Catego
 
         // Load image using Glide
         Glide.with(context)
-                .load(category.getImage())
+                .load(category.getImageUrl())
                 .placeholder(R.drawable.ic_launcher_background)
                 .into(holder.categoryImage);
     }

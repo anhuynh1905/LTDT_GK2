@@ -51,7 +51,6 @@ public class Exercise01Login extends AppCompatActivity {
                 if (email.isEmpty() || password.isEmpty()) {
                     Toast.makeText(Exercise01Login.this, "Vui lòng nhập đầy đủ thông tin", Toast.LENGTH_SHORT).show();
                 } else {
-                    // Đây là giả lập đăng nhập thành công
                     // Trong ứng dụng thực tế, bạn sẽ kiểm tra với database hoặc API
 
                     // Lưu trạng thái đăng nhập
@@ -94,5 +93,6 @@ public class Exercise01Login extends AppCompatActivity {
                 startActivity(intent);
             }
         });
+
     }
 }

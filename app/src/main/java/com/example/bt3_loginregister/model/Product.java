@@ -1,23 +1,36 @@
 package com.example.bt3_loginregister.model;
 
+import com.google.gson.annotations.SerializedName;
+
 public class Product {
+    @SerializedName("id")
     private int id;
+
+    @SerializedName("name")
     private String name;
+
+    @SerializedName("description")
     private String description;
+
+    @SerializedName("price")
     private double price;
-    private String image;
+
+    @SerializedName("imageUrl")
+    private String imageUrl;
+
+    @SerializedName("categoryId")
     private int categoryId;
 
     // Constructors
     public Product() {
     }
 
-    public Product(int id, String name, String description, double price, String image, int categoryId) {
+    public Product(int id, String name, String description, double price, String imageUrl, int categoryId) {
         this.id = id;
         this.name = name;
         this.description = description;
         this.price = price;
-        this.image = image;
+        this.imageUrl = imageUrl;
         this.categoryId = categoryId;
     }
 
@@ -54,12 +67,12 @@ public class Product {
         this.price = price;
     }
 
-    public String getImage() {
-        return image;
+    public String getImageUrl() {
+        return imageUrl;
     }
 
-    public void setImage(String image) {
-        this.image = image;
+    public void setImageUrl(String imageUrl) {
+        this.imageUrl = imageUrl;
     }
 
     public int getCategoryId() {
