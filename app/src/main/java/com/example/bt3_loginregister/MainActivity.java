@@ -29,7 +29,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 // Tạo Intent để chuyển từ MainActivity sang Exercise01Login
-                Intent intent = new Intent(MainActivity.this, Exercise01Login.class);
+                Intent intent = new Intent(MainActivity.this, TestActivity.class);
                 startActivity(intent); // Bắt đầu Activity mới
             }
         });
