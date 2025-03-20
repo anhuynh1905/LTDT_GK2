@@ -15,4 +15,6 @@ public interface ApiService {
 
     @GET("products/latest")
     Call<List<Product>> getLatestProducts();
+
+
 }
