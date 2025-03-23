@@ -133,6 +133,16 @@
             android:maxLength="1"
             android:textSize="18sp"
             android:textStyle="bold" />
+        <TextView
+            android:id="@+id/textViewTimer"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:textColor="#888888"
+            android:textSize="14sp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/textViewResendOtp" />
     </LinearLayout>
 
     <Button
@@ -161,5 +171,6 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/buttonVerifyOtp" />
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>

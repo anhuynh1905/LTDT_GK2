@@ -1,113 +1,223 @@
 package com.example.bt3_loginregister;
 
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
+import android.util.Patterns;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.graphics.Insets;
-import androidx.core.view.ViewCompat;
-import androidx.core.view.WindowInsetsCompat;
+
+import com.example.bt3_loginregister.api.ApiService;
+import com.example.bt3_loginregister.api.RetrofitClient;
+import com.example.bt3_loginregister.model.RegisterRequest;
+import com.example.bt3_loginregister.model.RegisterResponse;
+import com.google.gson.Gson;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class Exercise01Register extends AppCompatActivity {
 
-    private EditText editTextFullName, editTextPhone, editTextEmail, editTextPassword, editTextConfirmPassword;
-    private Button buttonRegister;
-    private TextView textViewLogin;
+    private static final String TAG = "Register_Khoalt0811";
+
+    private EditText editTextFullName, editTextEmail, editTextPassword, editTextConfirmPassword;
+    private ProgressDialog progressDialog;
+    private ApiService apiService;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        EdgeToEdge.enable(this);
         setContentView(R.layout.activity_exercise01_register);
-        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
-            Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
-            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
-            return insets;
-        });
+
+        // Khởi tạo API service
+        apiService = RetrofitClient.getClient().create(ApiService.class);
+
+        // Khởi tạo ProgressDialog
+        progressDialog = new ProgressDialog(this);
+        progressDialog.setMessage("Đang xử lý...");
+        progressDialog.setCancelable(false);
 
         // Ánh xạ các view
         editTextFullName = findViewById(R.id.editTextFullName);
-        editTextPhone = findViewById(R.id.editTextPhone);
         editTextEmail = findViewById(R.id.editTextEmail);
         editTextPassword = findViewById(R.id.editTextPassword);
         editTextConfirmPassword = findViewById(R.id.editTextConfirmPassword);
-        buttonRegister = findViewById(R.id.buttonRegister);
-        textViewLogin = findViewById(R.id.textViewLogin);
+        Button buttonRegister = findViewById(R.id.buttonRegister);
+        TextView textViewLogin = findViewById(R.id.textViewLogin);
 
-        // Xử lý sự kiện khi nhấn nút đăng ký
+        // Xử lý sự kiện click nút đăng ký
         buttonRegister.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                String fullName = editTextFullName.getText().toString().trim();
-                String phone = editTextPhone.getText().toString().trim();
-                String email = editTextEmail.getText().toString().trim();
-                String password = editTextPassword.getText().toString().trim();
-                String confirmPassword = editTextConfirmPassword.getText().toString().trim();
-
-                // Kiểm tra các trường nhập liệu
-                if (fullName.isEmpty() || phone.isEmpty() || email.isEmpty() || password.isEmpty() || confirmPassword.isEmpty()) {
-                    Toast.makeText(Exercise01Register.this, "Vui lòng nhập đầy đủ thông tin", Toast.LENGTH_SHORT).show();
-                    return;
-                }
-
-                // Kiểm tra định dạng email
-                if (!isValidEmail(email)) {
-                    Toast.makeText(Exercise01Register.this, "Email không hợp lệ", Toast.LENGTH_SHORT).show();
-                    return;
-                }
-
-                // Kiểm tra định dạng số điện thoại
-                if (!isValidPhone(phone)) {
-                    Toast.makeText(Exercise01Register.this, "Số điện thoại không hợp lệ", Toast.LENGTH_SHORT).show();
-                    return;
-                }
-
-                // Kiểm tra độ dài mật khẩu
-                if (password.length() < 6) {
-                    Toast.makeText(Exercise01Register.this, "Mật khẩu phải có ít nhất 6 ký tự", Toast.LENGTH_SHORT).show();
-                    return;
-                }
-
-                // Kiểm tra xác nhận mật khẩu
-                if (!password.equals(confirmPassword)) {
-                    Toast.makeText(Exercise01Register.this, "Mật khẩu xác nhận không khớp", Toast.LENGTH_SHORT).show();
-                    return;
-                }
-
-                // Chuyển đến màn hình xác thực OTP
-                Intent intent = new Intent(Exercise01Register.this, OtpVerificationActivity.class);
-                // Truyền thông tin người dùng sang màn hình OTP
-                intent.putExtra("fullName", fullName);
-                intent.putExtra("phone", phone);
-                intent.putExtra("email", email);
-                intent.putExtra("password", password);
-                startActivity(intent);
+                registerUser();
             }
         });
 
-        // Xử lý khi nhấn vào đăng nhập
+        // Xử lý sự kiện click text đăng nhập
         textViewLogin.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                // Quay lại màn hình đăng nhập
+                // Chuyển đến màn hình đăng nhập
+                Intent intent = new Intent(Exercise01Register.this, Exercise01Login.class);
+                startActivity(intent);
                 finish();
             }
         });
     }
 
-    // Kiểm tra định dạng email đơn giản
-    private boolean isValidEmail(String email) {
-        return android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches();
-    }
+    private void registerUser() {
+        // Lấy giá trị từ các trường nhập
+        String fullName = editTextFullName.getText().toString().trim();
+        String email = editTextEmail.getText().toString().trim();
+        String password = editTextPassword.getText().toString().trim();
+        String confirmPassword = editTextConfirmPassword.getText().toString().trim();
 
-    // Kiểm tra định dạng số điện thoại đơn giản
-    private boolean isValidPhone(String phone) {
-        return phone.length() >= 10 && android.util.Patterns.PHONE.matcher(phone).matches();
+        // Kiểm tra dữ liệu đầu vào
+        if (fullName.isEmpty()) {
+            editTextFullName.setError("Vui lòng nhập họ tên");
+            editTextFullName.requestFocus();
+            return;
+        }
+
+        if (email.isEmpty()) {
+            editTextEmail.setError("Vui lòng nhập email");
+            editTextEmail.requestFocus();
+            return;
+        }
+
+        if (!Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
+            editTextEmail.setError("Email không hợp lệ");
+            editTextEmail.requestFocus();
+            return;
+        }
+
+        if (password.isEmpty()) {
+            editTextPassword.setError("Vui lòng nhập mật khẩu");
+            editTextPassword.requestFocus();
+            return;
+        }
+
+        if (password.length() < 6) {
+            editTextPassword.setError("Mật khẩu phải có ít nhất 6 ký tự");
+            editTextPassword.requestFocus();
+            return;
+        }
+
+        if (!password.equals(confirmPassword)) {
+            editTextConfirmPassword.setError("Mật khẩu xác nhận không khớp");
+            editTextConfirmPassword.requestFocus();
+            return;
+        }
+
+        // Hiển thị dialog loading
+        progressDialog.show();
+
+        // Tạo request body
+        RegisterRequest registerRequest = new RegisterRequest();
+        registerRequest.setUsername(fullName);
+        registerRequest.setEmail(email);
+        registerRequest.setPassword(password);
+
+        // Log thông tin request để debug
+        Log.d(TAG, "Register request: " + new Gson().toJson(registerRequest));
+
+        // Gọi API đăng ký
+        Call<RegisterResponse> call = apiService.requestRegister(registerRequest);
+        call.enqueue(new Callback<RegisterResponse>() {
+            @Override
+            public void onResponse(Call<RegisterResponse> call, Response<RegisterResponse> response) {
+                progressDialog.dismiss();
+
+                // Log thông tin response để debug
+                Log.d(TAG, "Response code: " + response.code());
+
+                if (response.isSuccessful() && response.body() != null) {
+                    RegisterResponse registerResponse = response.body();
+
+                    // Log response body để debug
+                    Log.d(TAG, "Response body: " + new Gson().toJson(registerResponse));
+
+                    // Chuyển đến màn hình xác thực OTP
+                    Intent intent = new Intent(Exercise01Register.this, OtpVerificationActivity.class);
+                    intent.putExtra("fullName", fullName);
+                    intent.putExtra("email", email);
+                    intent.putExtra("username", email); // Sử dụng email làm username
+                    intent.putExtra("password", password);
+
+                    // Gửi mã OTP nếu có (môi trường dev)
+                    if (registerResponse.getOtp() != null && !registerResponse.getOtp().isEmpty()) {
+                        intent.putExtra("verificationCode", registerResponse.getOtp());
+                        Log.d(TAG, "OTP received: " + registerResponse.getOtp());
+                    } else {
+                        // Nếu không có OTP trong response, log để debug
+                        Log.d(TAG, "No OTP in response. User will need to check email.");
+                    }
+
+                    startActivity(intent);
+
+                    Toast.makeText(Exercise01Register.this,
+                            "Đăng ký thành công! Vui lòng xác thực mã OTP",
+                            Toast.LENGTH_LONG).show();
+                } else {
+                    try {
+                        String errorBody = response.errorBody() != null ?
+                                response.errorBody().string() : "Unknown error";
+                        Log.e(TAG, "Error: " + errorBody);
+
+                        // Hiển thị thông báo lỗi thân thiện hơn
+                        String errorMessage;
+                        if (response.code() == 400) {
+                            errorMessage = "Email đã được sử dụng hoặc thông tin không hợp lệ";
+                        } else if (response.code() == 500) {
+                            errorMessage = "Lỗi server. Vui lòng thử lại sau";
+                        } else {
+                            errorMessage = "Đăng ký thất bại: " + response.code();
+                        }
+
+                        Toast.makeText(Exercise01Register.this,
+                                errorMessage,
+                                Toast.LENGTH_LONG).show();
+                    } catch (Exception e) {
+                        Log.e(TAG, "Error parsing error response", e);
+                        Toast.makeText(Exercise01Register.this,
+                                "Đã xảy ra lỗi không xác định",
+                                Toast.LENGTH_LONG).show();
+                    }
+                }
+            }
+
+            @Override
+            public void onFailure(Call<RegisterResponse> call, Throwable t) {
+                progressDialog.dismiss();
+                Log.e(TAG, "API call failed", t);
+
+                // Phân tích chi tiết lỗi để hiển thị thông báo phù hợp
+                String errorMessage;
+                if (t.getMessage() != null && t.getMessage().contains("CLEARTEXT communication")) {
+                    errorMessage = "Lỗi kết nối: Vui lòng kiểm tra cài đặt mạng và quyền ứng dụng";
+
+                    // Kiểm tra và cảnh báo nếu thiếu cấu hình usesCleartextTraffic
+                    Log.e(TAG, "CLEARTEXT communication error - Make sure you have android:usesCleartextTraffic=\"true\" in your AndroidManifest.xml");
+                } else if (t.getMessage() != null && t.getMessage().contains("Failed to connect")) {
+                    errorMessage = "Không thể kết nối đến server. Vui lòng kiểm tra địa chỉ server và cài đặt mạng";
+
+                    // Kiểm tra URL của API
+                    Log.e(TAG, "Connection error - Check if your BASE_URL is correct in RetrofitClient.java");
+                } else if (t.getMessage() != null && t.getMessage().contains("socket failed: EPERM")) {
+                    errorMessage = "Lỗi quyền truy cập mạng. Vui lòng kiểm tra cài đặt và quyền của ứng dụng";
+                } else {
+                    errorMessage = "Lỗi kết nối: " + t.getMessage();
+                }
+
+                Toast.makeText(Exercise01Register.this, errorMessage, Toast.LENGTH_LONG).show();
+            }
+        });
     }
 }
