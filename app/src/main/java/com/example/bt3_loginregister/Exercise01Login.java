@@ -73,7 +73,7 @@ public class Exercise01Login extends AppCompatActivity {
 
                             Toast.makeText(Exercise01Login.this, "Đăng nhập thành công", Toast.LENGTH_SHORT).show();
                             // Navigate to the next screen or activity
-                            Intent intent = new Intent(Exercise01Login.this, TestActivity.class);
+                            Intent intent = new Intent(Exercise01Login.this, DashboardActivity.class);
                             startActivity(intent);
                         } else {
                             Toast.makeText(Exercise01Login.this, loginResponse.getMessage(), Toast.LENGTH_SHORT).show();
