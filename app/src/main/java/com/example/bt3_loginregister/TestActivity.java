@@ -44,57 +44,10 @@ public class TestActivity extends AppCompatActivity {
         setupCategoriesAdapter();
         setupProductsAdapter();
 
-        // Xử lý sự kiện bottom navigation
-        setupBottomNavigation();
+
     }
 
-    private void setupBottomNavigation() {
-        LinearLayout homeBtn = findViewById(R.id.homeBtn);
-        LinearLayout profileBtn = findViewById(R.id.profileBtn);
-        LinearLayout cartBtn = findViewById(R.id.cartBtn);
-        LinearLayout supportBtn = findViewById(R.id.supportBtn);
-        LinearLayout settingsBtn = findViewById(R.id.settingsBtn);
 
-        homeBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Toast.makeText(TestActivity.this, "Home clicked", Toast.LENGTH_SHORT).show();
-                // Đây đã là trang Home nên không cần chuyển đi đâu
-            }
-        });
-
-        profileBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Toast.makeText(TestActivity.this, "Profile clicked", Toast.LENGTH_SHORT).show();
-                // Thêm code để chuyển đến trang Profile nếu cần
-            }
-        });
-
-        cartBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Toast.makeText(TestActivity.this, "Cart clicked", Toast.LENGTH_SHORT).show();
-                // Thêm code để chuyển đến trang Cart nếu cần
-            }
-        });
-
-        supportBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Toast.makeText(TestActivity.this, "Support clicked", Toast.LENGTH_SHORT).show();
-                // Thêm code để chuyển đến trang Support nếu cần
-            }
-        });
-
-        settingsBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Toast.makeText(TestActivity.this, "Settings clicked", Toast.LENGTH_SHORT).show();
-                // Thêm code để chuyển đến trang Settings nếu cần
-            }
-        });
-    }
 
     private void setupCategoriesAdapter() {
         // Tạo dữ liệu mẫu cho Categories

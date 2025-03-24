@@ -62,4 +62,8 @@ dependencies {
     // Lifecycle components
     implementation("androidx.lifecycle:lifecycle-viewmodel:2.6.2")
     implementation("androidx.lifecycle:lifecycle-livedata:2.6.2")
+    implementation("com.squareup.okhttp3:logging-interceptor:4.9.1")
+
+    // Gson for JSON parsing
+    implementation("com.google.code.gson:gson:2.9.0")
 }

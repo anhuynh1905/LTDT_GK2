@@ -15,13 +15,20 @@ import retrofit2.Call;
 import retrofit2.http.Body;
 import retrofit2.http.GET;
 import retrofit2.http.POST;
+import retrofit2.http.Query;
+
 
 public interface ApiService {
-
+    // Endpoint để lấy tất cả danh mục
     @GET("categories")
     Call<List<Category>> getAllCategories();
 
-    @GET("products/latest")
+    // Endpoint để lấy sản phẩm mới nhất (sử dụng endpoint random meals)
+    @GET("meals/random/multiple")
+    Call<List<Product>> getLatestProducts(@Query("count") int count);
+
+    // Phương thức helper mặc định lấy 6 sản phẩm
+    @GET("meals/random/multiple")
     Call<List<Product>> getLatestProducts();
 
     // Authentication endpoints

@@ -42,7 +42,7 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ProductV
 
         // Load image using Glide
         Glide.with(context)
-                .load(product.getImage())
+                .load(product.getImageUrl())
                 .placeholder(R.drawable.ic_launcher_background)
                 .into(holder.productImage);
     }

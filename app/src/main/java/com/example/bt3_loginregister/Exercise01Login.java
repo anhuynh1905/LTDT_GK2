@@ -48,6 +48,7 @@ public class Exercise01Login extends AppCompatActivity {
                 return;
             }
 
+
             buttonLogin.setEnabled(false);
             buttonLogin.setText("Đang đăng nhập...");
 
@@ -98,5 +99,6 @@ public class Exercise01Login extends AppCompatActivity {
 
         // Navigate to register
         textViewRegister.setOnClickListener(v -> startActivity(new Intent(this, Exercise01Register.class)));
+
     }
 }
